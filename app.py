@@ -147,7 +147,6 @@ if st.button(" Predict Price", use_container_width=True):
         st.stop()
 
     if landsize >= 0 or buildingarea >= 0:
-        st.stop()
 
     if yearbuilt < 1800 or yearbuilt > 2025:
         st.error("Invalid year built")
