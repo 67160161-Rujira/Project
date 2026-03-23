@@ -146,7 +146,9 @@ if st.button(" Predict Price", use_container_width=True):
         st.error("Bathrooms must be at least 1")
         st.stop()
 
-    if landsize >= 0 or buildingarea >= 0:
+    if landsize <= 0 or buildingarea <= 0:
+        st.error("Area must be at least 0")
+        st.stop()
 
     if yearbuilt < 1800 or yearbuilt > 2025:
         st.error("Invalid year built")
