@@ -8,14 +8,10 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.ensemble import RandomForestRegressor
 
 
-# ==============================
 # CONFIG
-# ==============================
 st.set_page_config(page_title="House Price AI", page_icon="🏠", layout="wide")
 
-# ==============================
 # LOAD MODEL (Pipeline)
-# ==============================
 import os
 
 def load_model():
@@ -23,9 +19,8 @@ def load_model():
 
 model = load_model()
 
-# ==============================
 # UI STYLE
-# ==============================
+
 st.markdown("""
 <style>
 .stApp {
@@ -75,35 +70,31 @@ div[data-testid="stMetric"]:hover {
 
 /* ===== FIX EXPANDER HEADER ===== */
 
-/* หัวข้อปกติ */
 div[data-testid="stExpander"] summary {
     color: white !important;
     font-weight: 600;
 }
-
-/* ตอน hover */
 div[data-testid="stExpander"] summary:hover {
     color: #facc15 !important;  /* เหลือง */
 }
 
-/* ตอน focus (บาง browser) */
 div[data-testid="stExpander"] summary:focus {
     color: white !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================
+
 # HEADER
-# ==============================
+
 st.markdown("<h1 style='text-align:center;'>House Price Prediction</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;'>Predict house price using Machine Learning</p>", unsafe_allow_html=True)
 
 st.markdown("---")
 
-# ==============================
+
 # INPUT
-# ==============================
+
 st.subheader("📊 Property Information")
 
 col1, col2, col3 = st.columns(3)
@@ -123,9 +114,9 @@ with col3:
     distance = st.number_input("Distance (km)", 0.0, 50.0, 10.0)
     region = st.selectbox("Region", ["Northern", "Western", "Southern", "Eastern"])
 
-# ==============================
+
 # FEATURE EXPLANATION
-# ==============================
+
 with st.expander("ℹ️ What do these features mean?"):
     st.markdown("""
     **Rooms** – จำนวนห้อง  
@@ -141,9 +132,9 @@ with st.expander("ℹ️ What do these features mean?"):
 
 st.markdown("---")
 
-# ==============================
+
 # PREDICT
-# ==============================
+
 if st.button(" Predict Price", use_container_width=True):
 
     # ========= VALIDATION =========
@@ -155,7 +146,7 @@ if st.button(" Predict Price", use_container_width=True):
         st.error("Bathrooms must be at least 1")
         st.stop()
 
-    if landsize <= 0 or buildingarea <= 0:
+    if landsize >= 0 or buildingarea >= 0:
         st.error("Area must be greater than 0")
         st.stop()
 
@@ -195,9 +186,9 @@ if st.button(" Predict Price", use_container_width=True):
     prediction = model.predict(input_data)
     price = prediction[0]
 
-    # ========= REAL CONFIDENCE (ไม่ error) =========
+    # ========= REAL CONFIDENCE  =========
     try:
-        # ผ่าน preprocessor ก่อน (สำคัญมาก!!)
+       
         X_transformed = model.named_steps['preprocessor'].transform(input_data)
 
         trees = model.named_steps['model'].estimators_
@@ -206,11 +197,11 @@ if st.button(" Predict Price", use_container_width=True):
 
         std = np.std(tree_preds)
 
-        # normalize (กันเพี้ยน)
+        # normalize 
         confidence = max(0, 100 - (std / price) * 100)
 
     except Exception:
-        # fallback (กันพัง)
+        # fallback 
         confidence = 75.0
 
     # ========= LEVEL =========
