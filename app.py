@@ -2,7 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
-import gdown
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.ensemble import RandomForestRegressor
 
 
 # ==============================
@@ -13,20 +16,12 @@ st.set_page_config(page_title="House Price AI", page_icon="🏠", layout="wide")
 # ==============================
 # LOAD MODEL (Pipeline)
 # ==============================
-@st.cache_resource
-def load_model():
-    import gdown
 import os
 
-@st.cache_resource
 def load_model():
-    if not os.path.exists("house_model.pkl"):
-        url = "https://drive.google.com/uc?id=1jje7lL-JrS6MLni4oeEsU6N1PwG9Lmrd"
-        gdown.download(url, "house_model.pkl", quiet=False)
     return joblib.load("house_model.pkl")
 
 model = load_model()
-
 
 # ==============================
 # UI STYLE
