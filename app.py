@@ -189,6 +189,8 @@ if st.button(" Predict Price", use_container_width=True):
         'Propertycount': [1000]
     })
 
+    input_data = input_data[model.feature_names_in_]
+
     # ========= PREDICTION =========
     prediction = model.predict(input_data)
     price = prediction[0]
