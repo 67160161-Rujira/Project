@@ -11,9 +11,8 @@ from sklearn.ensemble import RandomForestRegressor
 # CONFIG
 st.set_page_config(page_title="House Price AI", page_icon="🏠", layout="wide")
 
-# LOAD MODEL (Pipeline)
-import os
-
+# LOAD MODEL
+@st.cache_resource
 def load_model():
     return joblib.load("house_model.pkl")
 
@@ -180,11 +179,15 @@ if st.button(" Predict Price", use_container_width=True):
         'Propertycount': [1000]
     })
 
-    input_data = input_data[model.feature_names_in_]
+    # กัน error feature mismatch
+    try:
+        input_data = input_data[model.feature_names_in_]
+    except:
+        pass
+
 
     # ========= PREDICTION =========
-    prediction = model.predict(input_data)
-    price = prediction[0]
+    prediction = model.predict(input_data)[0]
 
     # ========= REAL CONFIDENCE  =========
     try:
@@ -230,6 +233,34 @@ if st.button(" Predict Price", use_container_width=True):
 
     st.success("Prediction completed successfully")
     st.caption("Exchange rate approx: 1 AUD ≈ 24 THB")
+
+# ===== INSIGHT (โบนัส) =====
+    st.markdown("### 🧠 Model Insight")
+
+    if distance > 20:
+        st.info("📍 บ้านอยู่ไกลเมือง → ราคามักลดลง")
+    if buildingarea > 200:
+        st.info("🏠 พื้นที่บ้านใหญ่ → ราคามักสูงขึ้น")
+    if rooms >= 5:
+        st.info("🛏️ ห้องเยอะ → ราคามักสูงขึ้น")
+
+    # ===== FEATURE IMPORTANCE (โบนัสโคตรสำคัญ) =====
+    st.markdown("### 🔍 Feature Importance")
+
+    try:
+        importances = model.named_steps["model"].feature_importances_
+        features = model.named_steps["preprocessor"].get_feature_names_out()
+
+        feat_df = pd.DataFrame({
+            "Feature": features,
+            "Importance": importances
+        }).sort_values(by="Importance", ascending=False)
+
+        st.bar_chart(feat_df.set_index("Feature"))
+    except:
+        st.warning("Feature importance not available")
+
+    st.success("Prediction completed!")
 
 st.markdown("---")
 
