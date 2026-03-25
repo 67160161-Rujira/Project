@@ -47,7 +47,7 @@
 ---
 
 ## 🌐 การใช้งานผ่านเว็บไซต์
-👉 (ใส่ลิงก์หลังจาก deploy เช่น https://your-app.streamlit.app)
+👉 https://project-u3hr9vngjbnjxowt4dccvd.streamlit.app/#feature-importance
 
 ---
 
